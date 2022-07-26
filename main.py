@@ -29,6 +29,7 @@ for book in to_down :
     coverfile = os.path.join(bookdir, 'cover.jpg')
     print(f'Downloading cover for {book["title"]}')
     galaxyaudiobooks.download.download_file(book["image"], coverfile)
+    galaxyaudiobooks.search.write_data(book, os.path.join(bookdir, 'book.json'))
     
     tracks = galaxyaudiobooks.download(book["url"]).tracks
     trackcount = 0

@@ -58,6 +58,10 @@ class search:
                 }
             )
         return alldata
+    
+    def write_data(data, path):
+        with open(path, "w") as f:
+            f.write(json.dumps(data))
 
 
 class download:
