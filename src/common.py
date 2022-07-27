@@ -2,6 +2,7 @@ import json
 import requests
 import os
 from clint.textui import progress
+import urllib.parse
 
 class common :
     def write_data(data, path):
@@ -9,7 +10,9 @@ class common :
             f.write(json.dumps(data))
     
     def download_file(url, out):
+        url = urllib.parse.unquote(url)
         r = requests.get(url, stream=True)
+        print(url)
         total_length = int(r.headers.get("content-length"))
         dodownload = True
         if os.path.exists(out):

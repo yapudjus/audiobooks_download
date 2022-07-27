@@ -62,13 +62,16 @@ class download:
         alltracks = []
         response = requests.get(url)
         pattern = r'class="page-links"(.|\n)*?</div>'
-        pagestemp = re.search(pattern, response.text).group()
-        pagestemp = pagestemp.replace('class="page-links">Pages: ', "").replace(
-            "</div>", ""
-        )
-        for i in re.finditer(r'"post-page-numbers">\d*?</a>', pagestemp) :
-            pagescount = i.group().replace('"post-page-numbers">', "").replace("</a>", "")
-            trackcount = 0
+        pagestemp = re.search(pattern, response.text)
+        if pagestemp:
+            pagestemp = pagestemp.group().replace('class="page-links">Pages: ', "").replace(
+                "</div>", ""
+            )
+            for i in re.finditer(r'"post-page-numbers">\d*?</a>', pagestemp) :
+                pagescount = i.group().replace('"post-page-numbers">', "").replace("</a>", "")
+        else :
+            pagescount = 1
+        trackcount = 0
         for i in range(1, int(pagescount) + 1):
             turl = f"{url}/{i}"
             urllist = []
