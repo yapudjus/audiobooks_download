@@ -2,14 +2,19 @@ import os
 import re
 from unicodedata import name
 from src import galaxyaudiobooks
+from src import bookaudiobooks
 from src import common
 
 query = input('Search: ')
+
 print(f'searching for "{query}" on galaxyaudiobook.com')
 galaxylist = galaxyaudiobooks.search(query).json
+print(f'searching for "{query}" on bookaudiobooks.com')
+bookaudiolist = bookaudiobooks.search(query).json
 
 sources = {
     "Galaxy": {"length": len(galaxylist), "data": galaxylist, "name": "Galaxy"},
+    "Bookaudio": {"length": len(bookaudiolist), "data": bookaudiolist, "name": "Bookaudio"},
 }
 
 sourcescount = 0
@@ -26,6 +31,8 @@ booklist, sourcetype = sources[sourceselect]["data"], sources[sourceselect]["nam
 
 for i in range(len(booklist)):
     if sourcetype == "Galaxy":
+        print(f'{i}. {booklist[i]["title"]}')
+    elif sourcetype == "Bookaudio":
         print(f'{i}. {booklist[i]["title"]}')
 
 inp = (input('Selection: '))
@@ -55,12 +62,17 @@ for book in to_down :
     
     if sourcetype == "Galaxy":
         tracks = galaxyaudiobooks.download(book["url"]).tracks
+    if sourcetype == "Bookaudio":
+        print(book["url"])
+        tracks = bookaudiobooks.download(book["url"]).tracks
     trackcount = 0
     for track in tracks :
         trackcount += 1
         print(f'Downloading track {track["name"]} ({trackcount}/{len(tracks)}) from book {book["title"]} ({bookcount}/{len(to_down)}) ')
         if sourcetype == "Galaxy":
             link = galaxyaudiobooks.download.get_url(track["chapter_id"])
+        if sourcetype == "Bookaudio":
+            link = track["url"]
         out = os.path.join(bookdir, re.sub(r'( |[/:,.;!§*µ$£¨ù%&"])', '_', track["name"])) + '.mp3'
         outpath = common.common.download_file(link, out)
         print(f'Saved to {outpath}')
