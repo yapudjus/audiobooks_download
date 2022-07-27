@@ -1,10 +1,32 @@
 import os
 import re
+from unicodedata import name
 from src import galaxyaudiobooks
+from src import common
 
-booklist = galaxyaudiobooks.search(input('Search: ')).json
+query = input('Search: ')
+print(f'searching for "{query}" on galaxyaudiobook.com')
+galaxylist = galaxyaudiobooks.search(query).json
+
+sources = {
+    "Galaxy": {"length": len(galaxylist), "data": galaxylist, "name": "Galaxy"},
+}
+
+sourcescount = 0
+for i in sources:
+    if sources[i]["length"] > 0:
+        print(f'{sourcescount}. {sources[i]["name"]} ({sources[i]["length"]})')
+    sourcescount += 1
+sourceselect = input('source: ')
+
+sourceselect = int(sourceselect)
+sourceselect = sources[list(sources.keys())[sourceselect]]["name"]
+
+booklist, sourcetype = sources[sourceselect]["data"], sources[sourceselect]["name"]
+
 for i in range(len(booklist)):
-    print(f'{i}. {booklist[i]["publish_date"]} - {booklist[i]["title"]}')
+    if sourcetype == "Galaxy":
+        print(f'{i}. {booklist[i]["title"]}')
 
 inp = (input('Selection: '))
 
@@ -28,15 +50,17 @@ for book in to_down :
     if not os.path.isdir(bookdir): os.mkdir(bookdir)
     coverfile = os.path.join(bookdir, 'cover.jpg')
     print(f'Downloading cover for {book["title"]}')
-    galaxyaudiobooks.download.download_file(book["image"], coverfile)
-    galaxyaudiobooks.search.write_data(book, os.path.join(bookdir, 'book.json'))
+    common.common.download_file(book["image"], coverfile)
+    common.common.write_data(book, os.path.join(bookdir, 'book.json'))
     
-    tracks = galaxyaudiobooks.download(book["url"]).tracks
+    if sourcetype == "Galaxy":
+        tracks = galaxyaudiobooks.download(book["url"]).tracks
     trackcount = 0
     for track in tracks :
         trackcount += 1
         print(f'Downloading track {track["name"]} ({trackcount}/{len(tracks)}) from book {book["title"]} ({bookcount}/{len(to_down)}) ')
-        link = galaxyaudiobooks.download.get_url(track["chapter_id"])
+        if sourcetype == "Galaxy":
+            link = galaxyaudiobooks.download.get_url(track["chapter_id"])
         out = os.path.join(bookdir, re.sub(r'( |[/:,.;!§*µ$£¨ù%&"])', '_', track["name"])) + '.mp3'
-        outpath = galaxyaudiobooks.download.download_file(link, out)
+        outpath = common.common.download_file(link, out)
         print(f'Saved to {outpath}')
