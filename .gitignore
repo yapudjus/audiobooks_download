@@ -1,4 +1,4 @@
 out
 .vscode
 src/__pycache__
-index.html
+*.html
