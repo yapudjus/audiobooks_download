@@ -12,7 +12,6 @@ class common :
     def download_file(url, out):
         url = urllib.parse.unquote(url)
         r = requests.get(url, stream=True)
-        print(url)
         total_length = int(r.headers.get("content-length"))
         dodownload = True
         if os.path.exists(out):
