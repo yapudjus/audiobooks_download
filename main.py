@@ -6,7 +6,7 @@ from src import litteratureaudio
 from src import common
 import html
 
-debug = True
+debug = False
 
 debugger = common.debug(debug)
 
@@ -82,7 +82,7 @@ for book in to_down:
         coverfile = os.path.join(bookdir, "cover.jpg")
         print(f'Downloading cover for {book["title"]}')
         debugger.log(f'{book["image"]} => {coverfile}')
-        common.common.download_file(book["image"], coverfile, lbl=book["image"])
+        common.common.download_file(book["image"], coverfile, lbl=f'{book["title"]} cover')
         debugger.log(f'{book} => {os.path.join(bookdir, "book.json")}')
         common.common.write_data(book, os.path.join(bookdir, "book.json"))
 
@@ -92,6 +92,7 @@ for book in to_down:
             tracks = bookaudiobooks.download(book["url"]).tracks
         if sourcetype == "litteratureaudio":
             tracks = litteratureaudio.download(book["url"]).tracks
+        debugger.log(tracks)
         trackcount = 0
         for track in tracks:
             trackcount += 1
@@ -109,9 +110,10 @@ for book in to_down:
                 link = track["url"]
             elif sourcetype == "litteratureaudio":
                 link = track["url"]
-                out = out.replace(".mp3", ".zip")
+                if link.find('.zip') != -1:
+                    out = out.replace(".mp3", ".zip")
             debugger.log(f'{link} => {out}')
-            outpath = common.common.download_file(link, out, lbl = f'{book["title"]} ({bookcount}/{len(to_down)})')
+            outpath = common.common.download_file(link, out, lbl = f'{book["title"]} track {trackcount}/{len(tracks)}')
             print(f"Saved to {outpath}")
             
             if sourcetype == "litteratureaudio" :

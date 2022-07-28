@@ -38,12 +38,15 @@ class search:
                 .replace('rel="bookmark">', "")
                 .replace("</a></h3>", "")
             )
-            author = (
-                re.search(r'rel="tag">.*?</a></span><span class="entry-voix">', tmp)
-                .group()
-                .replace('rel="tag">', "")
-                .replace('</a></span><span class="entry-voix">', "")
-            )
+            try :
+                author = (
+                    re.search(r'rel="tag">.*?</a></span><span class="entry-voix">', tmp)
+                    .group()
+                    .replace('rel="tag">', "")
+                    .replace('</a></span><span class="entry-voix">', "")
+                )
+            except :
+                author = "unknown"
             if author.find("Auteurs divers") != -1 : author = "Auteurs divers"
             articles.append(
                 {"url": url, "image": image, "title": title, "author": author}
@@ -59,10 +62,53 @@ class download :
     def get_tracks(self, url):
         alltracks = []
         response = requests.get(url)
-        pattern = r'<a class="btn-download no-ajax" title=".*?" href="https://www.litteratureaudio.com/mp3/.*?\.zip".*?>'
-        for match in re.finditer(pattern, response.text):
-            match = match.group()
-            murl = re.search(r'href="(.*?)"', match).group().replace('href="', "").replace('"', "")
-            mname = re.search(r'title=".*?"', match).group().replace('title="', "").replace('"', "")
-            alltracks.append({"url": murl, "name": mname})
+        if re.search(r'<div class="wp-block-loop wp-block-loop-any block-loop-row block-loop-index album-tracks">', response.text) :
+            for i in re.finditer(r'<article.*?</article>') :
+                print(i.group())
+        else :
+            pattern = r'<a class="btn-download no-ajax" title=".*?" href="https://www.litteratureaudio.com/mp3/.*?\.zip".*?>'
+            tmp = []
+            for i in re.finditer(pattern, response.text) : tmp.append(i)
+            if len(tmp) > 0 :
+                print('zip')
+                for match in tmp:
+                    match = match.group()
+                    murl = re.search(r'href="(.*?)"', match).group().replace('href="', "").replace('"', "")
+                    mname = re.search(r'title=".*?"', match).group().replace('title="', "").replace('"', "")
+                    alltracks.append({"url": murl, "name": mname})
+            else :
+                print('mp3')
+                pattern = r'<a href="https://www.litteratureaudio.com/mp3/.*?".*?</a>'
+                matches = re.finditer(pattern, response.text)
+                tmp = []
+                for i in re.finditer(pattern, response.text) : tmp.append(i)
+                if len(tmp) > 0 :
+                    for match in matches :
+                        if match.group().find('rel="home"') == -1 and match.group().find('.zip') == -1 :
+                            match = match.group()
+                            murl = re.search(r'href="(.*?)"', match).group().replace('href="', "").replace('"', "")
+                            mname = re.search(r'">.*?</a>', match).group().replace('">', "").replace('</a>', "")
+                            alltracks.append({"url": murl, "name": mname})
+                else :
+                    print('zip_fallback_1')
+                    pattern = r'"https://www.litteratureaudio.com/mp3/.*?\.zip"'
+                    matches = re.finditer(pattern, response.text)
+                    tmp = []
+                    for i in matches : tmp.append(i)
+                    if len(tmp) > 0 :
+                        for i in matches :
+                            mname = i.group().replace('"https://www.litteratureaudio.com/mp3/', "")
+                            murl = i.group()
+                    else :
+                        print('mp3_fallback_1')
+                        pattern = r'"https://www.litteratureaudio.com/mp3/.*?\.mp3"'
+                        matches = re.finditer(pattern, response.text)
+                        tmp = []
+                        for i in matches : tmp.append(i)
+                        if len(tmp) > 0 :
+                            for i in matches :
+                                mname = i.group().replace('"https://www.litteratureaudio.com/mp3/', "")
+                                murl = i.group()
+                        else :
+                            print('no more fallback solution for this book')
         return alltracks
