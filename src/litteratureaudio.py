@@ -62,9 +62,11 @@ class download :
     def get_tracks(self, url):
         alltracks = []
         response = requests.get(url)
-        if re.search(r'<div class="wp-block-loop wp-block-loop-any block-loop-row block-loop-index album-tracks">', response.text) :
-            for i in re.finditer(r'<article.*?</article>') :
-                print(i.group())
+        if False : pass # don't even ask 
+        # TODO: find a way to get the tracks
+        # if re.search(r'<div class="wp-block-loop wp-block-loop-any block-loop-row block-loop-index album-tracks">', response.text) :
+        #     for i in re.finditer(r'<article.*?</article>', response.text) :
+        #         print(i.group())
         else :
             pattern = r'<a class="btn-download no-ajax" title=".*?" href="https://www.litteratureaudio.com/mp3/.*?\.zip".*?>'
             tmp = []
