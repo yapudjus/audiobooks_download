@@ -16,6 +16,7 @@
    no idea, i don't have a mac // jsp j'ai pas de mac
 
 ## 🇺🇸
+### *I do not condone piracy and this script should be of educational purpose only, tho i don't have any way to check what you are doing with it*
  
 ### currently supported websites
  - https://galaxyaudiobook.com
@@ -28,6 +29,7 @@
  
 
 ## 🇫🇷
+### *je n'encourage en aucuns cas le piratage et téléchargement ilégal, ce script est à but éducatif uniquement, même si je n'ai aucun moyen de vérifier ce que vous faite avec*
 
 ### sites actuellement supportés
  - https://galaxyaudiobook.com
