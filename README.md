@@ -24,8 +24,9 @@
  - 🇫🇷 | https://www.litteratureaudio.com
  - 🇫🇷 | https://www.audiocite.net/
 ### sites to add
- - none
- - open to suggestions, if so please open an issue with a link to the site and the tag `new_site`
+ - https://librivox.org/
+ - http://www.bibliboom.com/
+ - open to suggestions, if so please open an issue with a link to the site and the tag `new_site`, i won't do the 'index' websites that have multiple sources
  
 
 ## 🇫🇷
@@ -38,5 +39,6 @@
  - 🇫🇷 | https://www.audiocite.net/
 
 ### sites à rajouter
- - aucuns
- - ouvert aux suggestions, si vous en avez, créez une issue avec un lien vers le site et le tag `new_site`
+ - https://librivox.org/
+ - http://www.bibliboom.com/
+ - ouvert aux suggestions, si vous en avez, créez une issue avec un lien vers le site et le tag `new_site`, je ne ferais pas les sites 'index' regroupant plusieures sources
