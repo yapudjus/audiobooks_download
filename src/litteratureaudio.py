@@ -62,12 +62,8 @@ class download :
     def get_tracks(self, url):
         alltracks = []
         response = requests.get(url)
-        if False : pass # don't even ask 
-        # TODO: find a way to get the tracks
-        # if re.search(r'<div class="wp-block-loop wp-block-loop-any block-loop-row block-loop-index album-tracks">', response.text) :
-        #     for i in re.finditer(r'<article.*?</article>', response.text) :
-        #         print(i.group())
-        else :
+        
+        if len(alltracks) == 0 : # zip code
             pattern = r'<a class="btn-download no-ajax" title=".*?" href="https://www.litteratureaudio.com/mp3/.*?\.zip".*?>'
             tmp = []
             for i in re.finditer(pattern, response.text) : tmp.append(i)
@@ -78,39 +74,43 @@ class download :
                     murl = re.search(r'href="(.*?)"', match).group().replace('href="', "").replace('"', "")
                     mname = re.search(r'title=".*?"', match).group().replace('title="', "").replace('"', "")
                     alltracks.append({"url": murl, "name": mname})
-            else :
-                print('mp3')
-                pattern = r'<a href="https://www.litteratureaudio.com/mp3/.*?".*?</a>'
-                matches = re.finditer(pattern, response.text)
-                tmp = []
-                for i in re.finditer(pattern, response.text) : tmp.append(i)
-                if len(tmp) > 0 :
-                    for match in matches :
-                        if match.group().find('rel="home"') == -1 and match.group().find('.zip') == -1 :
-                            match = match.group()
-                            murl = re.search(r'href="(.*?)"', match).group().replace('href="', "").replace('"', "")
-                            mname = re.search(r'">.*?</a>', match).group().replace('">', "").replace('</a>', "")
-                            alltracks.append({"url": murl, "name": mname})
-                else :
-                    print('zip_fallback_1')
-                    pattern = r'"https://www.litteratureaudio.com/mp3/.*?\.zip"'
-                    matches = re.finditer(pattern, response.text)
-                    tmp = []
-                    for i in matches : tmp.append(i)
-                    if len(tmp) > 0 :
-                        for i in matches :
-                            mname = i.group().replace('"https://www.litteratureaudio.com/mp3/', "")
-                            murl = i.group()
-                    else :
-                        print('mp3_fallback_1')
-                        pattern = r'"https://www.litteratureaudio.com/mp3/.*?\.mp3"'
-                        matches = re.finditer(pattern, response.text)
-                        tmp = []
-                        for i in matches : tmp.append(i)
-                        if len(tmp) > 0 :
-                            for i in matches :
-                                mname = i.group().replace('"https://www.litteratureaudio.com/mp3/', "")
-                                murl = i.group()
-                        else :
-                            print('no more fallback solution for this book')
+        
+        if len(alltracks) == 0 : # mp3 code
+            print('mp3')
+            pattern = r'<a href="https://www.litteratureaudio.com/mp3/.*?".*?</a>'
+            matches = re.finditer(pattern, response.text)
+            tmp = []
+            for i in re.finditer(pattern, response.text) : tmp.append(i)
+            if len(tmp) > 0 :
+                for match in matches :
+                    if match.group().find('rel="home"') == -1 and match.group().find('.zip') == -1 :
+                        match = match.group()
+                        murl = re.search(r'href="(.*?)"', match).group().replace('href="', "").replace('"', "")
+                        mname = re.search(r'">.*?</a>', match).group().replace('">', "").replace('</a>', "")
+                        alltracks.append({"url": murl, "name": mname})
+        
+        if len(alltracks) == 0 : # zip fallback code
+            print('zip_fallback_1')
+            pattern = r'"https://www.litteratureaudio.com/mp3/.*?\.zip"'
+            matches = re.finditer(pattern, response.text)
+            tmp = []
+            for i in matches : tmp.append(i)
+            if len(tmp) > 0 :
+                for i in matches :
+                    mname = i.group().replace('"https://www.litteratureaudio.com/mp3/', "")
+                    murl = i.group()
+        
+        if len(alltracks) == 0 : # mp3 fallback code
+            print('mp3_fallback_1')
+            pattern = r'"https://www.litteratureaudio.com/mp3/.*?\.mp3"'
+            matches = re.finditer(pattern, response.text)
+            tmp = []
+            for i in matches : tmp.append(i)
+            if len(tmp) > 0 :
+                for i in matches :
+                    mname = i.group().replace('"https://www.litteratureaudio.com/mp3/', "")
+                    murl = i.group()
+        
+        if len(alltracks) == 0 : # no more fallback code
+                print('no more fallback solution for this book')
         return alltracks
