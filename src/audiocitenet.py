@@ -75,7 +75,7 @@ class download:
     def get_tracks(self, url):
         alltracks = []
         response = requests.get(url)
-        pattern = r'(href="https://archive.org/download/.*?(mp3|zip)"|href="../download\.php\?id=.*?")'
+        pattern = r'(href="https?://(www\.)?archive.org/(download|compress)/.*?(mp3|zip)"|href="../download\.php\?id=.*?")'
         for tmp in re.finditer(pattern, response.text) : 
             tname = str(len(alltracks))
             turl = tmp.group().replace('href="', "").replace('"', "").replace("../", "https://www.audiocite.net/")
