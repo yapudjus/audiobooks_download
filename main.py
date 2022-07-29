@@ -7,7 +7,7 @@ from src import audiocitenet
 from src import common
 import html
 
-debug = True
+debug = False
 
 debugger = common.debug(debug)
 
