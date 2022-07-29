@@ -3,21 +3,36 @@ import re
 from src import galaxyaudiobooks
 from src import bookaudiobooks
 from src import litteratureaudio
+from src import audiocitenet
 from src import common
 import html
 
-debug = False
+debug = True
 
 debugger = common.debug(debug)
 
-query = input("Search: ")
+if debug:
+    sources = []
+    inp = input("preselect sources ? : ")
+    for i in inp.split(','):
+        sources.append(int(i))
+else : 
+    sources = [0, 1, 2, 3]
 
-print(f'searching for "{query}" on galaxyaudiobook.com')
-galaxylist = galaxyaudiobooks.search(query).json
-print(f'searching for "{query}" on bookaudiobooks.com')
-bookaudiolist = bookaudiobooks.search(query).json
-print(f'searching for "{query}" on litteratureaudio.com')
-litteratureaudiolist = litteratureaudio.search(query).json
+query = input("Search: ")
+galaxylist, bookaudiolist, litteratureaudiolist, audiocitelist = [], [], [], []
+if 0 in sources:
+    print(f'searching for "{query}" on galaxyaudiobook.com')
+    galaxylist = galaxyaudiobooks.search(query).json
+if 1 in sources:
+    print(f'searching for "{query}" on bookaudiobooks.com')
+    bookaudiolist = bookaudiobooks.search(query).json
+if 2 in sources:
+    print(f'searching for "{query}" on litteratureaudio.com')
+    litteratureaudiolist = litteratureaudio.search(query).json
+if 3 in sources:
+    print(f'searching for "{query}" on audiocite.net')
+    audiocitelist = audiocitenet.search(query).json
 
 sources = {
     "Galaxy": {"length": len(galaxylist), "data": galaxylist, "name": "Galaxy"},
@@ -30,6 +45,11 @@ sources = {
         "length": len(litteratureaudiolist),
         "data": litteratureaudiolist,
         "name": "litteratureaudio",
+    },
+    "audiocite": {
+        "length": len(audiocitelist),
+        "data": audiocitelist,
+        "name": "audiocite",
     },
 }
 
@@ -52,6 +72,8 @@ for i in range(len(booklist)):
         print(f'{i}. {html.unescape(booklist[i]["title"])}')
     elif sourcetype == "litteratureaudio":
         print(f'{i}. {html.unescape(booklist[i]["author"])} | {html.unescape(booklist[i]["title"])}')
+    elif sourcetype == "audiocite":
+        print(f'{i}. {html.unescape(booklist[i]["title"])} | {html.unescape(booklist[i]["author"])} ({booklist[i]["duration"]}) [{booklist[i]["size"]}]')
 
 inp = input("Selection: ")
 
@@ -88,10 +110,12 @@ for book in to_down:
 
         if sourcetype == "Galaxy":
             tracks = galaxyaudiobooks.download(book["url"]).tracks
-        if sourcetype == "Bookaudio":
+        elif sourcetype == "Bookaudio":
             tracks = bookaudiobooks.download(book["url"]).tracks
-        if sourcetype == "litteratureaudio":
+        elif sourcetype == "litteratureaudio":
             tracks = litteratureaudio.download(book["url"]).tracks
+        elif sourcetype == "audiocite":
+            tracks = audiocitenet.download(book["url"]).tracks
         debugger.log(tracks)
         trackcount = 0
         for track in tracks:
@@ -112,11 +136,15 @@ for book in to_down:
                 link = track["url"]
                 if link.find('.zip') != -1:
                     out = out.replace(".mp3", ".zip")
+            elif sourcetype == "audiocite":
+                link = track["url"]
+                if link.find('.zip') != -1:
+                    out = out.replace(".mp3", ".zip")
             debugger.log(f'{link} => {out}')
             outpath = common.common.download_file(link, out, lbl = f'{book["title"]} track {trackcount}/{len(tracks)}')
             print(f"Saved to {outpath}")
             
-            if sourcetype == "litteratureaudio" :
+            if outpath.find(".zip") != -1:
                 # unzip the file to the same folder
                 import zipfile
                 debugger.log(f"Unzipping {outpath} to {bookdir}")
@@ -129,12 +157,10 @@ for book in to_down:
                     print("Invalid file")
     with open(os.path.join(bookdir, "loaded"), "w") as f:
         f.write("loaded")
-    if sourcetype == "litteratureaudio":
-        for i in os.listdir(bookdir):
-            if i.endswith(".zip"):
-                print(f'removing file {i}')
-                os.remove(os.path.join(bookdir, i))
     for i in os.listdir(bookdir):
+        if i.endswith(".zip"):
+            print(f'removing file {i}')
+            os.remove(os.path.join(bookdir, i))
         if os.path.isdir(os.path.join(bookdir, i)):
             for j in os.listdir(os.path.join(bookdir, i)):
                 if j.endswith(".mp3"):

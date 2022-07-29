@@ -19,10 +19,10 @@
 ### *I do not condone piracy and this script should be of educational purpose only, tho i don't have any way to check what you are doing with it*
  
 ### currently supported websites
- - https://galaxyaudiobook.com
- - https://bookaudiobooks.com
- - https://www.litteratureaudio.com
-
+ - 🇺🇸 | https://galaxyaudiobook.com
+ - 🇺🇸 | https://bookaudiobooks.com
+ - 🇫🇷 | https://www.litteratureaudio.com
+ - 🇫🇷 | https://www.audiocite.net/
 ### sites to add
  - none
  - open to suggestions, if so please open an issue with a link to the site and the tag `new_site`
@@ -32,9 +32,10 @@
 ### *je n'encourage en aucuns cas le piratage et téléchargement ilégal, ce script est à but éducatif uniquement, même si je n'ai aucun moyen de vérifier ce que vous faite avec*
 
 ### sites actuellement supportés
- - https://galaxyaudiobook.com
- - https://bookaudiobooks.com
- - https://www.litteratureaudio.com
+ - 🇺🇸 | https://galaxyaudiobook.com
+ - 🇺🇸 | https://bookaudiobooks.com
+ - 🇫🇷 | https://www.litteratureaudio.com
+ - 🇫🇷 | https://www.audiocite.net/
 
 ### sites à rajouter
  - aucuns
