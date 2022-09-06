@@ -77,10 +77,11 @@ class download :
         
         if len(alltracks) == 0 : # mp3 code
             print('mp3')
-            pattern = r'<a.*?href="https://www.litteratureaudio.com/mp3/.*?".*?(</a)?>'
+            pattern = r'<a(.*?)href="https://www.litteratureaudio.com/mp3/.*?".*?(</a)?>'
             matches = re.finditer(pattern, response.text)
             tmp = []
             for i in mathes : tmp.append(i)
+            print(tmp)
             if len(tmp) > 0 :
                 for match in matches :
                     if match.group().find('rel="home"') == -1 and match.group().find('.zip') == -1 :
@@ -103,6 +104,16 @@ class download :
         if len(alltracks) == 0 : # mp3 fallback code
             print('mp3_fallback_1')
             pattern = r'"https://www.litteratureaudio.com/mp3/.*?\.mp3"'
+            matches = re.finditer(pattern, response.text)
+            tmp = []
+            for i in matches : tmp.append(i)
+            if len(tmp) > 0 :
+                for i in matches :
+                    mname = i.group().replace('"https://www.litteratureaudio.com/mp3/', "")
+                    murl = i.group()
+        if len(alltracks) == 0 : # mp3 fallback code
+            print('mp3_fallback_2')
+            pattern = r'"https://www.litteratureaudio.com/mp3/.*?"'
             matches = re.finditer(pattern, response.text)
             tmp = []
             for i in matches : tmp.append(i)
