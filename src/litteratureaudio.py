@@ -77,10 +77,10 @@ class download :
         
         if len(alltracks) == 0 : # mp3 code
             print('mp3')
-            pattern = r'<a.*?href="https://www.litteratureaudio.com/mp3/.*?".*?</a>'
+            pattern = r'<a.*?href="https://www.litteratureaudio.com/mp3/.*?".*?(</a)?>'
             matches = re.finditer(pattern, response.text)
             tmp = []
-            for i in re.finditer(pattern, response.text) : tmp.append(i)
+            for i in mathes : tmp.append(i)
             if len(tmp) > 0 :
                 for match in matches :
                     if match.group().find('rel="home"') == -1 and match.group().find('.zip') == -1 :
